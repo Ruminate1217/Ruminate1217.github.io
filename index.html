@@ -1,14 +1,773 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <title>我的第一个网站</title>
-  <style>
-    body{background:#f6f6f6;text-align:center;padding:50px;}
-    h1{color:#ff5722}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YCY的录音文件密码</title>
+    <style>
+        /* ===== 全局重置 & 基础 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(145deg, #f5f7fa 0%, #e9edf5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* ===== 主容器 ===== */
+        .app-container {
+            width: 100%;
+            max-width: 1100px;
+            min-height: 600px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            padding: 40px 36px 36px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ===== 顶部标题栏 ===== */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .app-title {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4f6ef7, #7c4dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .app-title span {
+            font-size: 30px;
+            -webkit-text-fill-color: initial;
+            background: none;
+        }
+
+        .logout-btn {
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(4px);
+        }
+
+        .logout-btn:hover {
+            background: rgba(0, 0, 0, 0.12);
+            color: #1a1a1a;
+            transform: scale(0.97);
+        }
+
+        /* ===== 密码验证界面 ===== */
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 420px;
+            gap: 28px;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .login-icon {
+            font-size: 72px;
+            line-height: 1;
+            filter: drop-shadow(0 8px 24px rgba(79, 110, 247, 0.20));
+        }
+
+        .login-title {
+            font-size: 26px;
+            font-weight: 600;
+            color: #1a1a2e;
+            letter-spacing: -0.3px;
+        }
+
+        .login-sub {
+            font-size: 15px;
+            color: #8888a0;
+            margin-top: -12px;
+            font-weight: 400;
+        }
+
+        .login-form {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .login-form input {
+            width: 500px;
+            flex: none;
+            padding: 14px 22px;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(4px);
+            outline: none;
+            transition: all 0.3s ease;
+            color: #1a1a2e;
+        }
+
+        .login-form input:focus {
+            border-color: #4f6ef7;
+            box-shadow: 0 0 0 4px rgba(79, 110, 247, 0.15);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .login-form input.error {
+            border-color: #f87171;
+            box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.15);
+            animation: shake 0.45s ease;
+        }
+
+        .login-form button {
+            padding: 14px 36px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, #4f6ef7, #7c4dff);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(79, 110, 247, 0.30);
+            white-space: nowrap;
+        }
+
+        .login-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(79, 110, 247, 0.40);
+        }
+
+        .login-form button:active {
+            transform: scale(0.96);
+        }
+
+        .login-error {
+            color: #f87171;
+            font-size: 14px;
+            font-weight: 500;
+            min-height: 22px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .login-error.show {
+            opacity: 1;
+        }
+
+        .login-hint {
+            font-size: 13px;
+            color: #aab;
+            background: rgba(0, 0, 0, 0.03);
+            padding: 6px 18px;
+            border-radius: 30px;
+            border: 1px dashed #d0d5e0;
+        }
+
+        .login-hint strong {
+            color: #4f6ef7;
+            font-weight: 600;
+        }
+
+        /* ===== 主界面 (列表 + 密码展示) ===== */
+        .main-screen {
+            display: none;
+            animation: fadeUp 0.5s ease;
+        }
+
+        .main-screen.active {
+            display: block;
+        }
+
+        /* ===== 列表区域 ===== */
+        .list-section {
+            margin-bottom: 32px;
+        }
+
+        .list-section-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #8888a0;
+            margin-bottom: 14px;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .list-section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, #e2e8f0, transparent);
+        }
+
+        .list-scroll {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 6px 4px 16px 4px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #d0d5e0 transparent;
+        }
+
+        .list-scroll::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .list-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .list-scroll::-webkit-scrollbar-thumb {
+            background: #d0d5e0;
+            border-radius: 10px;
+        }
+
+        /* ===== 列表项卡片（日期按钮） ===== */
+        .list-item {
+            flex: 0 0 160px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(4px);
+            border-radius: 20px;
+            padding: 20px 12px 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid transparent;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            user-select: none;
+        }
+
+        .list-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px rgba(79, 110, 247, 0.12);
+            border-color: rgba(79, 110, 247, 0.20);
+        }
+
+        .list-item:active {
+            transform: scale(0.95);
+        }
+
+        .list-item.active {
+            border-color: #4f6ef7;
+            background: rgba(79, 110, 247, 0.06);
+            box-shadow: 0 8px 24px rgba(79, 110, 247, 0.15);
+            transform: translateY(-4px);
+        }
+
+        /* 日期文字样式（无图标） */
+        .list-item .item-date {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            letter-spacing: -0.2px;
+            transition: color 0.3s ease;
+        }
+
+        .list-item.active .item-date {
+            color: #4f6ef7;
+        }
+
+        /* ===== 密码展示区域 ===== */
+        .display-section {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 30px 24px;
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .display-section .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            color: #aaaac0;
+        }
+
+        .display-section .empty-state .big-icon {
+            font-size: 56px;
+            opacity: 0.5;
+        }
+
+        .display-section .empty-state p {
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .display-section .password-wrapper {
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            animation: fadeUp 0.5s ease;
+        }
+
+        .display-section .password-wrapper.active {
+            display: flex;
+        }
+
+        .display-section .password-wrapper .password-label {
+            font-size: 14px;
+            color: #8888a0;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* 密码值：不可选中、不可复制 */
+        .display-section .password-wrapper .password-value {
+            font-size: 30px;
+            font-weight: 700;
+            color: #1a1a2e;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 16px 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            word-break: break-all;
+            text-align: center;
+            width: 100%;
+            max-width: 1200px;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            pointer-events: none;
+        }
+
+        .display-section .password-wrapper .password-date {
+            font-size: 18px;
+            color: #4f6ef7;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .display-section .password-wrapper .password-hint {
+            font-size: 14px;
+            color: #aab;
+        }
+
+        /* ===== 动画 ===== */
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(24px) scale(0.97);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            20% {
+                transform: translateX(-12px);
+            }
+            40% {
+                transform: translateX(12px);
+            }
+            60% {
+                transform: translateX(-8px);
+            }
+            80% {
+                transform: translateX(8px);
+            }
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 24px 18px 20px;
+                border-radius: 28px;
+                min-height: auto;
+            }
+
+            .app-title {
+                font-size: 22px;
+            }
+
+            .login-screen {
+                min-height: 320px;
+                gap: 20px;
+            }
+
+            .login-icon {
+                font-size: 52px;
+            }
+
+            .login-title {
+                font-size: 22px;
+            }
+
+            .login-form {
+                flex-direction: column;
+                max-width: 100%;
+            }
+
+            .login-form input {
+                min-width: 100%;
+                padding: 12px 18px;
+                font-size: 15px;
+            }
+
+            .login-form button {
+                width: 100%;
+                padding: 12px;
+                font-size: 15px;
+            }
+
+            .list-item {
+                flex: 0 0 130px;
+                padding: 14px 8px 12px;
+            }
+
+            .list-item .item-date {
+                font-size: 13px;
+            }
+
+            .display-section {
+                padding: 20px 16px;
+                min-height: 180px;
+                border-radius: 20px;
+            }
+
+            .display-section .password-wrapper .password-value {
+                font-size: 32px;
+                padding: 12px 20px;
+            }
+
+            .display-section .password-wrapper .password-date {
+                font-size: 16px;
+            }
+
+            .logout-btn {
+                padding: 6px 14px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 16px 12px 16px;
+                border-radius: 20px;
+            }
+
+            .list-item {
+                flex: 0 0 100px;
+                padding: 10px 6px;
+                border-radius: 14px;
+            }
+
+            .list-item .item-date {
+                font-size: 11px;
+            }
+
+            .display-section .password-wrapper .password-value {
+                font-size: 24px;
+                padding: 10px 16px;
+            }
+
+            .display-section .password-wrapper .password-date {
+                font-size: 14px;
+            }
+
+            .app-title {
+                font-size: 18px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>这是我的网站！</h1>
+
+    <div class="app-container" id="app">
+
+        <!-- ===== 顶部 ===== -->
+        <header class="app-header">
+            <div class="app-title">
+                <span>📅</span> 密码本
+            </div>
+            <button class="logout-btn" id="logoutBtn" style="display:none;">
+                🔒 退出
+            </button>
+        </header>
+
+        <!-- ===== 登录界面 ===== -->
+        <div class="login-screen" id="loginScreen">
+            <div class="login-icon">🔐</div>
+            <div class="login-title">访问压缩包密码</div>
+            <div class="login-sub">请输入你前桌给你的密码以查看日期密码</div>
+
+            <div class="login-form" id="loginForm">
+                <input type="password" id="passwordInput" placeholder="请输入你前桌给你的密码" autofocus>
+                <button type="button" id="loginBtn">确认并保证不会抱你前桌</button>
+            </div>
+
+            <div class="login-error" id="loginError">❌ 密码错误，你不是YCY</div>
+
+        </div>
+
+        <!-- ===== 主界面 ===== -->
+        <div class="main-screen" id="mainScreen">
+
+            <!-- 日期列表 -->
+            <div class="list-section">
+                <div class="list-section-label">📋 选择日期</div>
+                <div class="list-scroll" id="listContainer">
+                    <!-- 由 JavaScript 动态生成 -->
+                </div>
+            </div>
+
+            <!-- 密码展示 -->
+            <div class="display-section" id="displaySection">
+                <div class="empty-state" id="emptyState">
+                    <div class="big-icon">👆</div>
+                    <p>点击上方日期查看密码</p>
+                </div>
+                <div class="password-wrapper" id="passwordWrapper">
+                    <div class="password-label">🔑 密码</div>
+                    <div class="password-value" id="displayPassword"></div>
+                    <div class="password-date" id="displayDate"></div>
+                    <div class="password-hint" id="displayHint"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================================
+            //  数据
+            // ============================================================
+            const MASTER_PASSWORD = 'wobuhuizaitouxiwodeqianzhuole';
+
+            const dateItems = [
+                { date: '2026-05', password: '47love14' },
+                { date: '2026-06-02', password: 'wo\'neng\'bao\'zheng\'bu\'zai\'bao\'wo\'de\'qian\'zhuo' }
+            ];
+
+            // ============================================================
+            //  状态
+            // ============================================================
+            let currentDate = null;
+
+            // ============================================================
+            //  DOM 引用
+            // ============================================================
+            const loginScreen = document.getElementById('loginScreen');
+            const mainScreen = document.getElementById('mainScreen');
+            const passwordInput = document.getElementById('passwordInput');
+            const loginBtn = document.getElementById('loginBtn');
+            const loginError = document.getElementById('loginError');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const listContainer = document.getElementById('listContainer');
+            const emptyState = document.getElementById('emptyState');
+            const passwordWrapper = document.getElementById('passwordWrapper');
+            const displayPassword = document.getElementById('displayPassword');
+            const displayDate = document.getElementById('displayDate');
+            const displayHint = document.getElementById('displayHint');
+
+            // ============================================================
+            //  保护密码元素（不可选中、不可复制）
+            // ============================================================
+            function protectPasswordElement(el) {
+                if (!el) return;
+                el.addEventListener('selectstart', (e) => e.preventDefault());
+                el.addEventListener('copy', (e) => e.preventDefault());
+                el.addEventListener('contextmenu', (e) => e.preventDefault());
+                el.addEventListener('mousedown', (e) => e.preventDefault());
+            }
+
+            // ============================================================
+            //  渲染日期列表（无图标）
+            // ============================================================
+            function renderList() {
+                listContainer.innerHTML = '';
+                dateItems.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'list-item';
+                    card.dataset.date = item.date;
+
+                    // 仅显示日期文字（完整年-月-日）
+                    const dateEl = document.createElement('div');
+                    dateEl.className = 'item-date';
+                    dateEl.textContent = item.date;
+
+                    card.appendChild(dateEl);
+                    card.addEventListener('click', () => selectDate(item.date));
+
+                    listContainer.appendChild(card);
+                });
+
+                if (dateItems.length > 0) {
+                    selectDate(dateItems[0].date);
+                }
+            }
+
+            // ============================================================
+            //  选择日期
+            // ============================================================
+            function selectDate(date) {
+                currentDate = date;
+                const item = dateItems.find(i => i.date === date);
+                if (!item) return;
+
+                document.querySelectorAll('.list-item').forEach(el => {
+                    el.classList.toggle('active', el.dataset.date === date);
+                });
+
+                emptyState.style.display = 'none';
+                passwordWrapper.classList.add('active');
+
+                displayPassword.textContent = item.password;
+                displayDate.textContent = `📅 ${item.date}`;
+                displayHint.textContent = '点击日期查看当天的压缩包密码';
+
+                protectPasswordElement(displayPassword);
+            }
+
+            // ============================================================
+            //  登录 / 登出
+            // ============================================================
+            function doLogin() {
+                const pwd = passwordInput.value.trim();
+                if (pwd === MASTER_PASSWORD) {
+                    loginError.classList.remove('show');
+                    passwordInput.classList.remove('error');
+                    loginScreen.style.display = 'none';
+                    mainScreen.classList.add('active');
+                    logoutBtn.style.display = 'flex';
+                    passwordInput.value = '';
+                    if (listContainer.children.length === 0) {
+                        renderList();
+                    } else {
+                        if (currentDate === null && dateItems.length > 0) {
+                            selectDate(dateItems[0].date);
+                        } else if (currentDate !== null) {
+                            selectDate(currentDate);
+                        }
+                    }
+                } else {
+                    passwordInput.classList.add('error');
+                    loginError.classList.add('show');
+                    passwordInput.focus();
+                    passwordInput.select();
+                    setTimeout(() => passwordInput.classList.remove('error'), 600);
+                }
+            }
+
+            function doLogout() {
+                loginScreen.style.display = 'flex';
+                mainScreen.classList.remove('active');
+                logoutBtn.style.display = 'none';
+                loginError.classList.remove('show');
+                passwordInput.classList.remove('error');
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+
+            // ============================================================
+            //  事件绑定
+            // ============================================================
+            loginBtn.addEventListener('click', doLogin);
+            passwordInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    doLogin();
+                }
+            });
+            logoutBtn.addEventListener('click', doLogout);
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.login-form') && !e.target.closest('.login-error')) {
+                    passwordInput.classList.remove('error');
+                }
+            });
+
+            // 全局补充阻止密码区域复制
+            document.addEventListener('copy', (e) => {
+                if (e.target.closest && e.target.closest('.password-value')) {
+                    e.preventDefault();
+                }
+            });
+            document.addEventListener('selectstart', (e) => {
+                if (e.target.closest && e.target.closest('.password-value')) {
+                    e.preventDefault();
+                }
+            });
+
+            // ============================================================
+            //  初始化
+            // ============================================================
+            loginScreen.style.display = 'flex';
+            mainScreen.classList.remove('active');
+            logoutBtn.style.display = 'none';
+            passwordInput.focus();
+            setTimeout(() => passwordInput.focus(), 100);
+
+            console.log('🔐 默认主密码: 123456');
+        })();
+    </script>
+
 </body>
 </html>
