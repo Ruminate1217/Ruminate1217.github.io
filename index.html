@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YCY的录音文件密码</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>主页</title>
     <style>
         /* ===== 全局重置 & 基础 ===== */
         * {
@@ -15,32 +15,33 @@
         body {
             font-family: 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
             min-height: 100vh;
-            background: linear-gradient(145deg, #f5f7fa 0%, #e9edf5 100%);
+            background: linear-gradient(145deg, #0f0f1a 0%, #1a1a2e 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
 
-        /* ===== 主容器 ===== */
+        /* ===== 主容器（深色毛玻璃） ===== */
         .app-container {
             width: 100%;
             max-width: 1100px;
             min-height: 600px;
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(20, 20, 40, 0.75);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-radius: 40px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
             padding: 40px 36px 36px;
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
+            color: #e8e8f0;
         }
 
         /* ===== 顶部标题栏 ===== */
         .app-header {
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 30px;
@@ -48,10 +49,14 @@
             gap: 12px;
         }
 
+        .app-header.visible {
+            display: flex;
+        }
+
         .app-title {
             font-size: 28px;
             font-weight: 700;
-            background: linear-gradient(135deg, #4f6ef7, #7c4dff);
+            background: linear-gradient(135deg, #8ab4f8, #a78bfa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -61,20 +66,33 @@
             gap: 10px;
         }
 
-        .app-title span {
+        .app-title .title-icon {
             font-size: 30px;
             -webkit-text-fill-color: initial;
             background: none;
+            color: #c0c8e0;
+        }
+
+        .app-title .module-badge {
+            font-size: 14px;
+            font-weight: 500;
+            background: rgba(138, 180, 248, 0.15);
+            padding: 2px 16px;
+            border-radius: 30px;
+            -webkit-text-fill-color: #8ab4f8;
+            background-clip: unset;
+            color: #8ab4f8;
+            letter-spacing: 0.3px;
         }
 
         .logout-btn {
-            background: rgba(0, 0, 0, 0.06);
+            background: rgba(255, 255, 255, 0.08);
             border: none;
             padding: 8px 20px;
             border-radius: 30px;
             font-size: 14px;
             font-weight: 500;
-            color: #555;
+            color: #c0c8e0;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
@@ -84,12 +102,12 @@
         }
 
         .logout-btn:hover {
-            background: rgba(0, 0, 0, 0.12);
-            color: #1a1a1a;
+            background: rgba(255, 255, 255, 0.16);
+            color: #ffffff;
             transform: scale(0.97);
         }
 
-        /* ===== 密码验证界面 ===== */
+        /* ===== 登录界面 ===== */
         .login-screen {
             display: flex;
             flex-direction: column;
@@ -100,82 +118,73 @@
             animation: fadeUp 0.6s ease;
         }
 
-        .login-icon {
-            font-size: 72px;
-            line-height: 1;
-            filter: drop-shadow(0 8px 24px rgba(79, 110, 247, 0.20));
-        }
-
         .login-title {
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 600;
-            color: #1a1a2e;
+            color: #e8e8f0;
             letter-spacing: -0.3px;
         }
 
-        .login-sub {
-            font-size: 15px;
-            color: #8888a0;
-            margin-top: -12px;
-            font-weight: 400;
-        }
-
-        .login-form {
+        .login-row {
             display: flex;
             align-items: center;
             gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
             width: 100%;
             max-width: 440px;
         }
 
-        .login-form input {
-            width: 500px;
-            flex: none;
+        .login-row input {
+            flex: 1;
             padding: 14px 22px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid rgba(255, 255, 255, 0.15);
             border-radius: 30px;
             font-size: 16px;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(4px);
             outline: none;
             transition: all 0.3s ease;
-            color: #1a1a2e;
+            color: #e8e8f0;
+            text-align: left;
         }
 
-        .login-form input:focus {
-            border-color: #4f6ef7;
-            box-shadow: 0 0 0 4px rgba(79, 110, 247, 0.15);
-            background: rgba(255, 255, 255, 0.9);
+        .login-row input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            text-align: left;
         }
 
-        .login-form input.error {
+        .login-row input:focus {
+            border-color: #8ab4f8;
+            box-shadow: 0 0 0 4px rgba(138, 180, 248, 0.15);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .login-row input.error {
             border-color: #f87171;
             box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.15);
             animation: shake 0.45s ease;
         }
 
-        .login-form button {
-            padding: 14px 36px;
+        .login-row .login-btn {
+            padding: 14px 32px;
             border: none;
             border-radius: 30px;
             font-size: 16px;
             font-weight: 600;
             color: #fff;
-            background: linear-gradient(135deg, #4f6ef7, #7c4dff);
+            background: linear-gradient(135deg, #8ab4f8, #a78bfa);
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 24px rgba(79, 110, 247, 0.30);
+            box-shadow: 0 8px 24px rgba(138, 180, 248, 0.25);
             white-space: nowrap;
+            flex-shrink: 0;
         }
 
-        .login-form button:hover {
+        .login-row .login-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(79, 110, 247, 0.40);
+            box-shadow: 0 12px 32px rgba(138, 180, 248, 0.35);
         }
 
-        .login-form button:active {
+        .login-row .login-btn:active {
             transform: scale(0.96);
         }
 
@@ -186,27 +195,16 @@
             min-height: 22px;
             opacity: 0;
             transition: opacity 0.3s ease;
+            text-align: center;
+            max-width: 440px;
+            width: 100%;
         }
 
         .login-error.show {
             opacity: 1;
         }
 
-        .login-hint {
-            font-size: 13px;
-            color: #aab;
-            background: rgba(0, 0, 0, 0.03);
-            padding: 6px 18px;
-            border-radius: 30px;
-            border: 1px dashed #d0d5e0;
-        }
-
-        .login-hint strong {
-            color: #4f6ef7;
-            font-weight: 600;
-        }
-
-        /* ===== 主界面 (列表 + 密码展示) ===== */
+        /* ===== 主界面 ===== */
         .main-screen {
             display: none;
             animation: fadeUp 0.5s ease;
@@ -224,7 +222,7 @@
         .list-section-label {
             font-size: 14px;
             font-weight: 500;
-            color: #8888a0;
+            color: rgba(255, 255, 255, 0.5);
             margin-bottom: 14px;
             letter-spacing: 0.3px;
             display: flex;
@@ -236,10 +234,11 @@
             content: '';
             flex: 1;
             height: 1px;
-            background: linear-gradient(to right, #e2e8f0, transparent);
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.1), transparent);
         }
 
-        .list-scroll {
+        /* ===== 卡片列表（密码本） ===== */
+        .list-scroll-cards {
             display: flex;
             gap: 16px;
             overflow-x: auto;
@@ -247,26 +246,23 @@
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: thin;
-            scrollbar-color: #d0d5e0 transparent;
+            scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
         }
 
-        .list-scroll::-webkit-scrollbar {
+        .list-scroll-cards::-webkit-scrollbar {
             height: 4px;
         }
-
-        .list-scroll::-webkit-scrollbar-track {
+        .list-scroll-cards::-webkit-scrollbar-track {
             background: transparent;
         }
-
-        .list-scroll::-webkit-scrollbar-thumb {
-            background: #d0d5e0;
+        .list-scroll-cards::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
             border-radius: 10px;
         }
 
-        /* ===== 列表项卡片（日期按钮） ===== */
-        .list-item {
+        .list-item-card {
             flex: 0 0 160px;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(4px);
             border-radius: 20px;
             padding: 20px 12px 18px;
@@ -274,43 +270,295 @@
             cursor: pointer;
             transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
             border: 2px solid transparent;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             user-select: none;
         }
 
-        .list-item:hover {
+        .list-item-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 12px 28px rgba(79, 110, 247, 0.12);
-            border-color: rgba(79, 110, 247, 0.20);
+            box-shadow: 0 12px 28px rgba(138, 180, 248, 0.15);
+            border-color: rgba(138, 180, 248, 0.2);
         }
-
-        .list-item:active {
+        .list-item-card:active {
             transform: scale(0.95);
         }
-
-        .list-item.active {
-            border-color: #4f6ef7;
-            background: rgba(79, 110, 247, 0.06);
-            box-shadow: 0 8px 24px rgba(79, 110, 247, 0.15);
+        .list-item-card.active {
+            border-color: #8ab4f8;
+            background: rgba(138, 180, 248, 0.08);
+            box-shadow: 0 8px 24px rgba(138, 180, 248, 0.2);
             transform: translateY(-4px);
         }
 
-        /* 日期文字样式（无图标） */
-        .list-item .item-date {
+        .list-item-card .item-date {
             font-size: 15px;
             font-weight: 600;
-            color: #1a1a2e;
+            color: #d0d8e8;
             letter-spacing: -0.2px;
             transition: color 0.3s ease;
         }
-
-        .list-item.active .item-date {
-            color: #4f6ef7;
+        .list-item-card.active .item-date {
+            color: #8ab4f8;
         }
 
-        /* ===== 密码展示区域 ===== */
+        /* ===== 时间轴横轴 ===== */
+        .list-scroll-timeline {
+            overflow-x: auto;
+            overflow-y: visible;
+            padding: 20px 0 30px 0;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+        }
+
+        .list-scroll-timeline::-webkit-scrollbar {
+            height: 4px;
+        }
+        .list-scroll-timeline::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .list-scroll-timeline::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+        }
+
+        .timeline-track {
+            position: relative;
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: flex-start;
+            gap: 24px;
+            padding: 0 30px;
+            width: max-content;
+            min-width: 100%;
+        }
+
+        .timeline-track::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 30px;
+            right: 30px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            z-index: 0;
+        }
+
+        .timeline-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: default;
+            position: relative;
+            z-index: 1;
+            background: transparent;
+            padding: 0 4px;
+            flex: 0 0 auto;
+            min-width: 70px;
+            max-width: 220px;
+        }
+
+        .timeline-node .node-date {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.6);
+            white-space: nowrap;
+            margin-bottom: 8px;
+        }
+
+        .timeline-node .node-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 6px;
+            z-index: 2;
+            flex-shrink: 0;
+        }
+
+        .timeline-node .node-content {
+            margin-top: 8px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(4px);
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            max-width: 200px;
+            width: 100%;
+            min-width: 70px;
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #d0d8e8;
+            word-break: break-word;
+            display: block;
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* ===== XTC 校验码计算工具 ===== */
+        .xtc-section {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0 20px;
+            max-width: 560px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .xtc-section.active {
+            display: flex;
+        }
+
+        .xtc-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #e8e8f0;
+            margin-bottom: 24px;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #8ab4f8, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .xtc-input-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .xtc-input-row input {
+            flex: 1;
+            padding: 14px 22px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(4px);
+            outline: none;
+            transition: all 0.3s ease;
+            color: #e8e8f0;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        .xtc-input-row input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+            font-family: 'Segoe UI', sans-serif;
+            letter-spacing: 0;
+        }
+
+        .xtc-input-row input:focus {
+            border-color: #8ab4f8;
+            box-shadow: 0 0 0 4px rgba(138, 180, 248, 0.15);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .xtc-input-row .xtc-btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, #8ab4f8, #a78bfa);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(138, 180, 248, 0.25);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .xtc-input-row .xtc-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(138, 180, 248, 0.35);
+        }
+
+        .xtc-input-row .xtc-btn:active {
+            transform: scale(0.96);
+        }
+
+        .xtc-result {
+            margin-top: 28px;
+            width: 100%;
+            max-width: 500px;
+            animation: fadeUp 0.5s ease;
+        }
+
+        .xtc-result .result-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            padding: 14px 20px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            color: #c8d0e0;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: background 0.2s;
+        }
+
+        .xtc-result .result-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .xtc-result .result-item .idx {
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.3);
+            min-width: 28px;
+            text-align: right;
+        }
+
+        .xtc-result .result-item .code {
+            color: #8ab4f8;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            word-break: break-all;
+        }
+
+        /* ===== 新增：结果提示文字 ===== */
+        .xtc-result .result-hint {
+            margin-top: 16px;
+            padding: 14px 20px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            letter-spacing: 0.3px;
+        }
+
+        .xtc-result .result-empty {
+            color: rgba(255, 255, 255, 0.25);
+            text-align: center;
+            font-size: 15px;
+            padding: 20px 0;
+        }
+
+        .xtc-result .result-error {
+            color: #f87171;
+            text-align: center;
+            font-size: 15px;
+            padding: 14px 0;
+            background: rgba(248, 113, 113, 0.08);
+            border-radius: 14px;
+            border: 1px solid rgba(248, 113, 113, 0.15);
+        }
+
+        /* ===== 展示区域（仅密码本使用） ===== */
         .display-section {
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.04);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border-radius: 28px;
@@ -320,11 +568,15 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
+        }
+
+        .display-section.hidden {
+            display: none;
         }
 
         .display-section .empty-state {
@@ -332,20 +584,19 @@
             flex-direction: column;
             align-items: center;
             gap: 12px;
-            color: #aaaac0;
+            color: rgba(255, 255, 255, 0.3);
         }
 
         .display-section .empty-state .big-icon {
             font-size: 56px;
             opacity: 0.5;
         }
-
         .display-section .empty-state p {
             font-size: 16px;
             font-weight: 400;
         }
 
-        .display-section .password-wrapper {
+        .display-section .content-wrapper {
             width: 100%;
             display: none;
             flex-direction: column;
@@ -354,51 +605,51 @@
             animation: fadeUp 0.5s ease;
         }
 
-        .display-section .password-wrapper.active {
+        .display-section .content-wrapper.active {
             display: flex;
         }
 
-        .display-section .password-wrapper .password-label {
+        .display-section .content-wrapper .content-label {
             font-size: 14px;
-            color: #8888a0;
+            color: rgba(255, 255, 255, 0.4);
             font-weight: 500;
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
 
-        /* 密码值：不可选中、不可复制 */
-        .display-section .password-wrapper .password-value {
+        .display-section .content-wrapper .content-value {
             font-size: 30px;
             font-weight: 700;
-            color: #1a1a2e;
-            background: rgba(255, 255, 255, 0.7);
+            color: #e8e8f0;
+            background: rgba(255, 255, 255, 0.06);
             padding: 16px 40px;
             border-radius: 20px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            font-family: 'Courier New', monospace;
-            letter-spacing: 2px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             word-break: break-all;
             text-align: center;
             width: 100%;
-            max-width: 1200px;
+            max-width: 500px;
             user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
             pointer-events: none;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+            line-height: 1.5;
         }
 
-        .display-section .password-wrapper .password-date {
+        .display-section .content-wrapper .content-date {
             font-size: 18px;
-            color: #4f6ef7;
+            color: #8ab4f8;
             font-weight: 500;
             margin-top: 4px;
         }
 
-        .display-section .password-wrapper .password-hint {
+        .display-section .content-wrapper .content-hint {
             font-size: 14px;
-            color: #aab;
+            color: rgba(255, 255, 255, 0.3);
         }
 
         /* ===== 动画 ===== */
@@ -443,44 +694,95 @@
             .app-title {
                 font-size: 22px;
             }
+            .app-title .module-badge {
+                font-size: 12px;
+                padding: 1px 12px;
+            }
 
             .login-screen {
                 min-height: 320px;
-                gap: 20px;
+                gap: 24px;
             }
-
-            .login-icon {
-                font-size: 52px;
-            }
-
             .login-title {
-                font-size: 22px;
+                font-size: 24px;
             }
 
-            .login-form {
-                flex-direction: column;
+            .login-row {
                 max-width: 100%;
+                flex-wrap: wrap;
+                justify-content: center;
             }
-
-            .login-form input {
+            .login-row input {
                 min-width: 100%;
-                padding: 12px 18px;
-                font-size: 15px;
+                font-size: 16px;
+                padding: 14px 20px;
+                text-align: left;
             }
-
-            .login-form button {
+            .login-row .login-btn {
                 width: 100%;
-                padding: 12px;
-                font-size: 15px;
+                padding: 14px;
+                font-size: 16px;
             }
 
-            .list-item {
+            .list-item-card {
                 flex: 0 0 130px;
                 padding: 14px 8px 12px;
             }
-
-            .list-item .item-date {
+            .list-item-card .item-date {
                 font-size: 13px;
+            }
+
+            .timeline-node {
+                min-width: 60px;
+                max-width: 160px;
+            }
+            .timeline-node .node-date {
+                font-size: 12px;
+            }
+            .timeline-node .node-dot {
+                width: 14px;
+                height: 14px;
+            }
+            .timeline-node .node-content {
+                max-width: 150px;
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+            .timeline-track {
+                gap: 16px;
+                padding: 0 20px;
+            }
+
+            .xtc-section {
+                max-width: 100%;
+                padding: 0 4px;
+            }
+            .xtc-title {
+                font-size: 22px;
+            }
+            .xtc-input-row {
+                max-width: 100%;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .xtc-input-row input {
+                min-width: 100%;
+                font-size: 16px;
+                padding: 14px 20px;
+                text-align: left;
+            }
+            .xtc-input-row .xtc-btn {
+                width: 100%;
+                padding: 14px;
+                font-size: 16px;
+            }
+            .xtc-result .result-item {
+                font-size: 14px;
+                padding: 12px 16px;
+            }
+            .xtc-result .result-hint {
+                font-size: 14px;
+                padding: 12px 16px;
             }
 
             .display-section {
@@ -488,13 +790,11 @@
                 min-height: 180px;
                 border-radius: 20px;
             }
-
-            .display-section .password-wrapper .password-value {
-                font-size: 32px;
+            .display-section .content-wrapper .content-value {
+                font-size: 26px;
                 padding: 12px 20px;
             }
-
-            .display-section .password-wrapper .password-date {
+            .display-section .content-wrapper .content-date {
                 font-size: 16px;
             }
 
@@ -510,27 +810,88 @@
                 border-radius: 20px;
             }
 
-            .list-item {
+            .list-item-card {
                 flex: 0 0 100px;
                 padding: 10px 6px;
                 border-radius: 14px;
             }
-
-            .list-item .item-date {
+            .list-item-card .item-date {
                 font-size: 11px;
             }
 
-            .display-section .password-wrapper .password-value {
-                font-size: 24px;
-                padding: 10px 16px;
+            .timeline-node {
+                min-width: 50px;
+                max-width: 130px;
+            }
+            .timeline-node .node-date {
+                font-size: 10px;
+            }
+            .timeline-node .node-dot {
+                width: 12px;
+                height: 12px;
+            }
+            .timeline-node .node-content {
+                max-width: 120px;
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+            .timeline-track {
+                gap: 12px;
+                padding: 0 15px;
             }
 
-            .display-section .password-wrapper .password-date {
+            .xtc-title {
+                font-size: 18px;
+            }
+            .xtc-input-row input {
+                font-size: 15px;
+                padding: 12px 16px;
+            }
+            .xtc-input-row .xtc-btn {
+                font-size: 15px;
+                padding: 12px;
+            }
+            .xtc-result .result-item {
+                font-size: 13px;
+                padding: 10px 14px;
+            }
+            .xtc-result .result-hint {
+                font-size: 13px;
+                padding: 10px 14px;
+            }
+
+            .display-section .content-wrapper .content-value {
+                font-size: 20px;
+                padding: 10px 16px;
+            }
+            .display-section .content-wrapper .content-date {
                 font-size: 14px;
             }
 
             .app-title {
                 font-size: 18px;
+            }
+            .app-title .module-badge {
+                font-size: 10px;
+                padding: 1px 10px;
+            }
+
+            .login-title {
+                font-size: 20px;
+            }
+            .login-row input {
+                font-size: 15px;
+                padding: 12px 16px;
+            }
+            .login-row .login-btn {
+                font-size: 15px;
+                padding: 12px;
+            }
+
+            .timeline-track::before {
+                left: 15px;
+                right: 15px;
+                top: 32px;
             }
         }
     </style>
@@ -540,52 +901,58 @@
     <div class="app-container" id="app">
 
         <!-- ===== 顶部 ===== -->
-        <header class="app-header">
-            <div class="app-title">
-                <span>📅</span> 密码本
+        <header class="app-header" id="appHeader">
+            <div class="app-title" id="appTitle">
+                <span class="title-icon" id="titleIcon">📅</span>
+                <span class="module-badge" id="moduleBadge">密码本</span>
             </div>
-            <button class="logout-btn" id="logoutBtn" style="display:none;">
-                🔒 退出
-            </button>
+            <button class="logout-btn" id="logoutBtn">🔒 退出</button>
         </header>
 
         <!-- ===== 登录界面 ===== -->
         <div class="login-screen" id="loginScreen">
-            <div class="login-icon">🔐</div>
-            <div class="login-title">访问压缩包密码</div>
-            <div class="login-sub">请输入你前桌给你的密码以查看日期密码</div>
-
-            <div class="login-form" id="loginForm">
-                <input type="password" id="passwordInput" placeholder="请输入你前桌给你的密码" autofocus>
-                <button type="button" id="loginBtn">确认并保证不会抱你前桌</button>
+            <div class="login-title">请输入账号</div>
+            <div class="login-row">
+                <input type="text" id="accountInput" placeholder="请输入账号" autofocus />
+                <button class="login-btn" id="loginBtn">确定</button>
             </div>
-
-            <div class="login-error" id="loginError">❌ 密码错误，你不是YCY</div>
-
+            <div class="login-error" id="loginError"></div>
         </div>
 
         <!-- ===== 主界面 ===== -->
         <div class="main-screen" id="mainScreen">
 
-            <!-- 日期列表 -->
-            <div class="list-section">
-                <div class="list-section-label">📋 选择日期</div>
-                <div class="list-scroll" id="listContainer">
+            <!-- 列表区域（密码本 / 时间轴 共用） -->
+            <div class="list-section" id="listSection">
+                <div class="list-section-label" id="listLabel">📋 选择日期</div>
+                <div id="listContainer">
                     <!-- 由 JavaScript 动态生成 -->
                 </div>
             </div>
 
-            <!-- 密码展示 -->
+            <!-- XTC 校验码计算工具 -->
+            <div class="xtc-section" id="xtcSection">
+                <div class="xtc-title">XTC校验码计算</div>
+                <div class="xtc-input-row">
+                    <input type="text" id="xtcInput" placeholder="请输入8位有效数字" />
+                    <button class="xtc-btn" id="xtcBtn">确定</button>
+                </div>
+                <div class="xtc-result" id="xtcResult">
+                    <div class="result-empty">请输入校验码后点击「确定」</div>
+                </div>
+            </div>
+
+            <!-- 内容展示（仅密码本使用） -->
             <div class="display-section" id="displaySection">
                 <div class="empty-state" id="emptyState">
                     <div class="big-icon">👆</div>
-                    <p>点击上方日期查看密码</p>
+                    <p id="emptyText">点击上方日期查看对应内容</p>
                 </div>
-                <div class="password-wrapper" id="passwordWrapper">
-                    <div class="password-label">🔑 密码</div>
-                    <div class="password-value" id="displayPassword"></div>
-                    <div class="password-date" id="displayDate"></div>
-                    <div class="password-hint" id="displayHint"></div>
+                <div class="content-wrapper" id="contentWrapper">
+                    <div class="content-label" id="contentLabel">🔑 密码</div>
+                    <div class="content-value" id="displayContent"></div>
+                    <div class="content-date" id="displayDate"></div>
+                    <div class="content-hint" id="displayHint"></div>
                 </div>
             </div>
 
@@ -599,38 +966,106 @@
             // ============================================================
             //  数据
             // ============================================================
-            const MASTER_PASSWORD = 'wobuhuizaitouxiwodeqianzhuole';
 
-            const dateItems = [
+            const passwordData = [
                 { date: '2026-05', password: '47love14' },
-                { date: '2026-06-02', password: 'wo\'neng\'bao\'zheng\'bu\'zai\'bao\'wo\'de\'qian\'zhuo' }
+                { date: '2026-06-02', password: "wo'neng'bao'zheng'bu'zai'bao'wo'de'qian'zhuo'" }
             ];
+
+            const timelineData = [
+                { date: '2026-07-17', content: '完善技能（除法和开方）' },
+                { date: '2026-07-21', content: '添加基础敌人' },
+                { date: '2026-07-24', content: '添加炮台、子弹' },
+                { date: '2026-07-28', content: '制作排行榜、结晶' },
+                { date: '2026-08-01', content: '基地完善' },
+                { date: '2026-08-07', content: '添加路线参数（颜色、宽度）' },
+                { date: '2026-08-09', content: '完善主线' }
+            ];
+
+            // ============================================================
+            //  XTC 校验码计算算法（用户提供的代码）
+            // ============================================================
+            function calculateXTC(input) {
+                const r = input.trim();
+                const results = [];
+
+                // 基本校验：至少8位数字
+                if (r.length < 8 || !/^\d+$/.test(r)) {
+                    return { error: '请输入8位有效数字' };
+                }
+
+                try {
+                    let o = parseInt(r[7]) ^ 1;
+                    let n = (parseInt(r[o]) + 10 - o) % 10;
+
+                    let s = "";
+                    for (let i = 0; i < 7; i++) {
+                        if (i === o) {
+                            s += String(n);
+                        } else {
+                            s += String((parseInt(r[i]) + 10 - n) % 10);
+                        }
+                    }
+
+                    for (let c = 0; c < 6; c++) {
+                        let l = "";
+                        let a = parseInt(s[c]);
+                        for (let i = 0; i < 7; i++) {
+                            if (i === c) {
+                                l += String((a + c) % 10);
+                            } else {
+                                l += String((parseInt(s[i]) + a) % 10);
+                            }
+                        }
+                        const candidate = l + String(1 ^ c);
+                        results.push({ index: c + 1, candidate: candidate });
+                    }
+
+                    return { results: results };
+                } catch (e) {
+                    return { error: '计算过程中发生错误，请检查输入' };
+                }
+            }
 
             // ============================================================
             //  状态
             // ============================================================
+            let currentAccount = null;
             let currentDate = null;
+            let currentData = [];
 
             // ============================================================
             //  DOM 引用
             // ============================================================
+            const appHeader = document.getElementById('appHeader');
             const loginScreen = document.getElementById('loginScreen');
             const mainScreen = document.getElementById('mainScreen');
-            const passwordInput = document.getElementById('passwordInput');
+            const accountInput = document.getElementById('accountInput');
             const loginBtn = document.getElementById('loginBtn');
-            const loginError = document.getElementById('loginError');
             const logoutBtn = document.getElementById('logoutBtn');
+            const loginError = document.getElementById('loginError');
             const listContainer = document.getElementById('listContainer');
+            const listSection = document.getElementById('listSection');
+            const xtcSection = document.getElementById('xtcSection');
+            const xtcInput = document.getElementById('xtcInput');
+            const xtcBtn = document.getElementById('xtcBtn');
+            const xtcResult = document.getElementById('xtcResult');
+            const displaySection = document.getElementById('displaySection');
             const emptyState = document.getElementById('emptyState');
-            const passwordWrapper = document.getElementById('passwordWrapper');
-            const displayPassword = document.getElementById('displayPassword');
+            const emptyText = document.getElementById('emptyText');
+            const contentWrapper = document.getElementById('contentWrapper');
+            const displayContent = document.getElementById('displayContent');
             const displayDate = document.getElementById('displayDate');
             const displayHint = document.getElementById('displayHint');
+            const contentLabel = document.getElementById('contentLabel');
+            const listLabel = document.getElementById('listLabel');
+            const moduleBadge = document.getElementById('moduleBadge');
+            const titleIcon = document.getElementById('titleIcon');
 
             // ============================================================
-            //  保护密码元素（不可选中、不可复制）
+            //  保护内容（不可选中、不可复制）——仅密码本使用
             // ============================================================
-            function protectPasswordElement(el) {
+            function protectContent(el) {
                 if (!el) return;
                 el.addEventListener('selectstart', (e) => e.preventDefault());
                 el.addEventListener('copy', (e) => e.preventDefault());
@@ -639,98 +1074,262 @@
             }
 
             // ============================================================
-            //  渲染日期列表（无图标）
+            //  渲染：卡片（密码本）
             // ============================================================
-            function renderList() {
-                listContainer.innerHTML = '';
-                dateItems.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'list-item';
-                    card.dataset.date = item.date;
+            function renderCards(data) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'list-scroll-cards';
 
-                    // 仅显示日期文字（完整年-月-日）
+                data.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'list-item-card';
+                    card.dataset.date = item.date;
                     const dateEl = document.createElement('div');
                     dateEl.className = 'item-date';
                     dateEl.textContent = item.date;
-
                     card.appendChild(dateEl);
                     card.addEventListener('click', () => selectDate(item.date));
-
-                    listContainer.appendChild(card);
+                    wrapper.appendChild(card);
                 });
 
-                if (dateItems.length > 0) {
-                    selectDate(dateItems[0].date);
+                listContainer.innerHTML = '';
+                listContainer.appendChild(wrapper);
+
+                displaySection.classList.remove('hidden');
+
+                if (data.length > 0) {
+                    selectDate(data[0].date);
                 }
             }
 
             // ============================================================
-            //  选择日期
+            //  渲染：横轴（时间轴）
+            // ============================================================
+            function renderTimeline(data) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'list-scroll-timeline';
+
+                const track = document.createElement('div');
+                track.className = 'timeline-track';
+
+                data.forEach(item => {
+                    const node = document.createElement('div');
+                    node.className = 'timeline-node';
+                    node.dataset.date = item.date;
+
+                    const dateLabel = document.createElement('div');
+                    dateLabel.className = 'node-date';
+                    dateLabel.textContent = item.date;
+
+                    const dot = document.createElement('div');
+                    dot.className = 'node-dot';
+
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'node-content';
+                    contentDiv.textContent = item.content;
+
+                    node.appendChild(dateLabel);
+                    node.appendChild(dot);
+                    node.appendChild(contentDiv);
+
+                    track.appendChild(node);
+                });
+
+                wrapper.appendChild(track);
+                listContainer.innerHTML = '';
+                listContainer.appendChild(wrapper);
+
+                displaySection.classList.add('hidden');
+                emptyState.style.display = 'flex';
+                contentWrapper.classList.remove('active');
+            }
+
+            // ============================================================
+            //  渲染：XTC 校验码计算工具
+            // ============================================================
+            function renderXTC() {
+                listSection.style.display = 'none';
+                displaySection.classList.add('hidden');
+                xtcSection.classList.add('active');
+                listContainer.innerHTML = '';
+                xtcResult.innerHTML = '<div class="result-empty">请输入校验码后点击「确定」</div>';
+                xtcInput.value = '';
+                xtcInput.focus();
+            }
+
+            // ============================================================
+            //  XTC 计算逻辑（过滤掉与原校验码相同的项）
+            // ============================================================
+            function handleXTCCompute() {
+                const input = xtcInput.value;
+                const original = input.trim(); // 保存原始输入用于比较
+                const result = calculateXTC(input);
+
+                if (result.error) {
+                    xtcResult.innerHTML = `<div class="result-error">❌ ${result.error}</div>`;
+                    return;
+                }
+
+                if (result.results && result.results.length > 0) {
+                    // 过滤掉与原始输入相同的候选码
+                    const filtered = result.results.filter(item => item.candidate !== original);
+
+                    if (filtered.length === 0) {
+                        xtcResult.innerHTML = `<div class="result-empty">所有候选码与原校验码相同，无新候选码</div>`;
+                        return;
+                    }
+
+                    let html = '';
+                    filtered.forEach(item => {
+                        html += `
+                            <div class="result-item">
+                                <span class="idx">#${item.index}</span>
+                                <span class="code">${item.candidate}</span>
+                            </div>
+                        `;
+                    });
+                    // 添加提示（注明已排除原校验码）
+                    html += `<div class="result-hint">以上为计算结果，任选其一输入即可</div>`;
+                    xtcResult.innerHTML = html;
+                } else {
+                    xtcResult.innerHTML = '<div class="result-empty">未生成任何候选码</div>';
+                }
+            }
+
+            // ============================================================
+            //  选择日期（仅密码本使用）
             // ============================================================
             function selectDate(date) {
                 currentDate = date;
-                const item = dateItems.find(i => i.date === date);
+                const item = currentData.find(i => i.date === date);
                 if (!item) return;
 
-                document.querySelectorAll('.list-item').forEach(el => {
-                    el.classList.toggle('active', el.dataset.date === date);
-                });
+                if (currentAccount === '47YCY') {
+                    document.querySelectorAll('.list-item-card').forEach(el => {
+                        el.classList.toggle('active', el.dataset.date === date);
+                    });
 
-                emptyState.style.display = 'none';
-                passwordWrapper.classList.add('active');
+                    emptyState.style.display = 'none';
+                    contentWrapper.classList.add('active');
 
-                displayPassword.textContent = item.password;
-                displayDate.textContent = `📅 ${item.date}`;
-                displayHint.textContent = '点击日期查看当天的压缩包密码';
+                    contentLabel.textContent = '🔑 密码';
+                    displayContent.textContent = item.password;
+                    displayContent.className = 'content-value';
+                    displayDate.textContent = `📅 ${item.date}`;
+                    displayHint.textContent = '点击日期查看对应密码';
 
-                protectPasswordElement(displayPassword);
+                    protectContent(displayContent);
+                }
+            }
+
+            // ============================================================
+            //  切换模块
+            // ============================================================
+            function switchModule(account) {
+                currentAccount = account;
+
+                const isPassword = (account === '47YCY');
+                const isTimeline = (account === 'ccwRum');
+                const isXTC = (account === 'xtcRum');
+
+                let moduleName = '';
+                let icon = '';
+
+                // 重置显示
+                listSection.style.display = 'block';
+                xtcSection.classList.remove('active');
+                displaySection.classList.remove('hidden');
+
+                if (isPassword) {
+                    moduleName = '密码本';
+                    icon = '🔐';
+                    currentData = [...passwordData];
+                    renderCards(currentData);
+                    displaySection.classList.remove('hidden');
+                } else if (isTimeline) {
+                    moduleName = '计划';
+                    icon = '📅';
+                    currentData = [...timelineData];
+                    renderTimeline(currentData);
+                    displaySection.classList.add('hidden');
+                } else if (isXTC) {
+                    moduleName = '校验码计算';
+                    icon = '✨';
+                    currentData = [];
+                    renderXTC();
+                }
+
+                moduleBadge.textContent = moduleName;
+                titleIcon.textContent = icon;
+
+                listLabel.textContent = isPassword ? '📋 选择日期' : '📋 选择日期';
+                emptyText.textContent = isPassword ? '点击上方日期查看对应密码' : '点击日期查看计划';
+
+                currentDate = null;
+
+                appHeader.classList.add('visible');
+                loginScreen.style.display = 'none';
+                mainScreen.classList.add('active');
+                logoutBtn.style.display = 'flex';
+                loginError.classList.remove('show');
+                loginError.textContent = '';
             }
 
             // ============================================================
             //  登录 / 登出
             // ============================================================
             function doLogin() {
-                const pwd = passwordInput.value.trim();
-                if (pwd === MASTER_PASSWORD) {
-                    loginError.classList.remove('show');
-                    passwordInput.classList.remove('error');
-                    loginScreen.style.display = 'none';
-                    mainScreen.classList.add('active');
-                    logoutBtn.style.display = 'flex';
-                    passwordInput.value = '';
-                    if (listContainer.children.length === 0) {
-                        renderList();
-                    } else {
-                        if (currentDate === null && dateItems.length > 0) {
-                            selectDate(dateItems[0].date);
-                        } else if (currentDate !== null) {
-                            selectDate(currentDate);
-                        }
-                    }
+                const account = accountInput.value.trim();
+                loginError.classList.remove('show');
+                loginError.textContent = '';
+
+                if (account === '47YCY' || account === 'ccwRum' || account === 'xtcRum') {
+                    switchModule(account);
+                    accountInput.value = '';
                 } else {
-                    passwordInput.classList.add('error');
+                    accountInput.classList.add('error');
+                    loginError.textContent = '请重新输入';
                     loginError.classList.add('show');
-                    passwordInput.focus();
-                    passwordInput.select();
-                    setTimeout(() => passwordInput.classList.remove('error'), 600);
+                    accountInput.focus();
+                    accountInput.select();
+                    setTimeout(() => accountInput.classList.remove('error'), 600);
                 }
             }
 
             function doLogout() {
+                currentAccount = null;
+                currentDate = null;
+                currentData = [];
+
+                appHeader.classList.remove('visible');
                 loginScreen.style.display = 'flex';
                 mainScreen.classList.remove('active');
                 logoutBtn.style.display = 'none';
+                accountInput.classList.remove('error');
+                accountInput.value = '';
+                accountInput.focus();
                 loginError.classList.remove('show');
-                passwordInput.classList.remove('error');
-                passwordInput.value = '';
-                passwordInput.focus();
+                loginError.textContent = '';
+
+                // 重置界面状态
+                listSection.style.display = 'block';
+                xtcSection.classList.remove('active');
+                displaySection.classList.remove('hidden');
+                emptyState.style.display = 'flex';
+                contentWrapper.classList.remove('active');
+                displayContent.textContent = '';
+                displayDate.textContent = '';
+                displayHint.textContent = '';
+                listContainer.innerHTML = '';
+                xtcResult.innerHTML = '<div class="result-empty">请输入校验码后点击「确定」</div>';
+                xtcInput.value = '';
             }
 
             // ============================================================
             //  事件绑定
             // ============================================================
             loginBtn.addEventListener('click', doLogin);
-            passwordInput.addEventListener('keydown', (e) => {
+            accountInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     doLogin();
@@ -738,20 +1337,27 @@
             });
             logoutBtn.addEventListener('click', doLogout);
 
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.login-form') && !e.target.closest('.login-error')) {
-                    passwordInput.classList.remove('error');
+            xtcBtn.addEventListener('click', handleXTCCompute);
+            xtcInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleXTCCompute();
                 }
             });
 
-            // 全局补充阻止密码区域复制
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.login-screen')) {
+                    accountInput.classList.remove('error');
+                }
+            });
+
             document.addEventListener('copy', (e) => {
-                if (e.target.closest && e.target.closest('.password-value')) {
+                if (e.target.closest && e.target.closest('.content-value')) {
                     e.preventDefault();
                 }
             });
             document.addEventListener('selectstart', (e) => {
-                if (e.target.closest && e.target.closest('.password-value')) {
+                if (e.target.closest && e.target.closest('.content-value')) {
                     e.preventDefault();
                 }
             });
@@ -759,13 +1365,17 @@
             // ============================================================
             //  初始化
             // ============================================================
+            appHeader.classList.remove('visible');
             loginScreen.style.display = 'flex';
             mainScreen.classList.remove('active');
             logoutBtn.style.display = 'none';
-            passwordInput.focus();
-            setTimeout(() => passwordInput.focus(), 100);
+            accountInput.focus();
+            setTimeout(() => accountInput.focus(), 100);
+            emptyState.style.display = 'flex';
+            contentWrapper.classList.remove('active');
+            loginError.classList.remove('show');
+            loginError.textContent = '';
 
-            console.log('🔐 默认主密码: 123456');
         })();
     </script>
 
