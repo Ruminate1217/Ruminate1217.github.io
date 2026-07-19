@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>主页</title>
     <style>
-        /* ===== 全局重置 & 基础 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -22,7 +21,6 @@
             padding: 20px;
         }
 
-        /* ===== 主容器（深色毛玻璃） ===== */
         .app-container {
             width: 100%;
             max-width: 1100px;
@@ -39,7 +37,6 @@
             color: #e8e8f0;
         }
 
-        /* ===== 顶部标题栏 ===== */
         .app-header {
             display: none;
             align-items: center;
@@ -107,7 +104,6 @@
             transform: scale(0.97);
         }
 
-        /* ===== 登录界面 ===== */
         .login-screen {
             display: flex;
             flex-direction: column;
@@ -204,7 +200,6 @@
             opacity: 1;
         }
 
-        /* ===== 主界面 ===== */
         .main-screen {
             display: none;
             animation: fadeUp 0.5s ease;
@@ -214,7 +209,6 @@
             display: block;
         }
 
-        /* ===== 列表区域 ===== */
         .list-section {
             margin-bottom: 32px;
         }
@@ -237,7 +231,6 @@
             background: linear-gradient(to right, rgba(255, 255, 255, 0.1), transparent);
         }
 
-        /* ===== 卡片列表（密码本） ===== */
         .list-scroll-cards {
             display: flex;
             gap: 16px;
@@ -300,7 +293,6 @@
             color: #8ab4f8;
         }
 
-        /* ===== 时间轴横轴 ===== */
         .list-scroll-timeline {
             overflow-x: auto;
             overflow-y: visible;
@@ -400,7 +392,6 @@
             opacity: 1;
         }
 
-        /* ===== XTC 校验码计算工具 ===== */
         .xtc-section {
             display: none;
             flex-direction: column;
@@ -528,7 +519,6 @@
             word-break: break-all;
         }
 
-        /* ===== 新增：结果提示文字 ===== */
         .xtc-result .result-hint {
             margin-top: 16px;
             padding: 14px 20px;
@@ -893,6 +883,34 @@
                 right: 15px;
                 top: 32px;
             }
+
+            .timeline-node.active {
+                background: rgba(138, 180, 248, 0.18) !important;
+                border-radius: 20px;
+                padding: 6px 14px !important;
+                border: 2px solid #8ab4f8 !important;
+                box-shadow: 0 0 20px rgba(138, 180, 248, 0.3) !important;
+                transition: all 0.3s ease;
+            }
+
+            .timeline-node.active .node-date {
+                color: #ffffff !important;
+                font-weight: 700 !important;
+                text-shadow: 0 0 10px rgba(138, 180, 248, 0.5);
+            }
+
+            .timeline-node.active .node-dot {
+                background: #8ab4f8 !important;
+                border-color: #ffffff !important;
+                box-shadow: 0 0 0 6px rgba(138, 180, 248, 0.4) !important;
+                transform: scale(1.3) !important;
+            }
+
+            .timeline-node.active .node-content {
+                border-color: rgba(138, 180, 248, 0.4) !important;
+                background: rgba(138, 180, 248, 0.08) !important;
+                box-shadow: 0 0 16px rgba(138, 180, 248, 0.15) !important;
+            }
         }
     </style>
 </head>
@@ -963,10 +981,6 @@
         (function() {
             'use strict';
 
-            // ============================================================
-            //  数据
-            // ============================================================
-
             const passwordData = [
                 { date: '2026-05', password: '47love14' },
                 { date: '2026-06-02', password: "wo'neng'bao'zheng'bu'zai'bao'wo'de'qian'zhuo'" }
@@ -979,17 +993,21 @@
                 { date: '2026-07-28', content: '制作排行榜、结晶' },
                 { date: '2026-08-01', content: '基地完善' },
                 { date: '2026-08-07', content: '添加路线参数（颜色、宽度）' },
-                { date: '2026-08-09', content: '完善主线' }
+                { date: '2026-08-09', content: '完善主线' },
+                { date: '2026-08-14', content: '敌人信息完善' },
+                { date: '2026-08-22', content: '制作支线（可能以后做）' },
+                { date: '2026-08-22', content: '制作训练场UI' },
+                { date: '2026-08-26', content: '制作搜索框' },
+                { date: '2026-09-05', content: '制作地图编辑器' },
+                { date: '2026-09-13', content: '制作代码（控制数据）编辑器' },
+                { date: '2026-09-27', content: '制作联机模式（可能不做）' },
+
             ];
 
-            // ============================================================
-            //  XTC 校验码计算算法（用户提供的代码）
-            // ============================================================
             function calculateXTC(input) {
                 const r = input.trim();
                 const results = [];
 
-                // 基本校验：至少8位数字
                 if (r.length < 8 || !/^\d+$/.test(r)) {
                     return { error: '请输入8位有效数字' };
                 }
@@ -1111,8 +1129,30 @@
 
                 const track = document.createElement('div');
                 track.className = 'timeline-track';
+                track.style.position = 'relative';
 
-                data.forEach(item => {
+                // ★ 创建绿色横线，添加唯一 id
+                const greenLine = document.createElement('div');
+                greenLine.id = 'greenLine_' + Date.now(); // 唯一 id
+                greenLine.style.cssText = `
+                    position: absolute;
+                    top: 40px;
+                    left: 30px;
+                    height: 4px;
+                    background: #4ade80 !important;
+                    border-radius: 4px;
+                    z-index: 999;
+                    width: 0;
+                    transition: width 0.3s ease;
+                    pointer-events: none;
+                    box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+                `;
+                track.appendChild(greenLine);
+                console.log('✅ 绿色线元素已创建，id:', greenLine.id);
+
+                const highlightIndex = Math.min(1, data.length - 1);
+
+                data.forEach((item, index) => {
                     const node = document.createElement('div');
                     node.className = 'timeline-node';
                     node.dataset.date = item.date;
@@ -1133,11 +1173,73 @@
                     node.appendChild(contentDiv);
 
                     track.appendChild(node);
+
+                    if (index === highlightIndex) {
+                        dateLabel.style.color = '#3b82f6';
+                        dateLabel.style.fontWeight = '700';
+                        dot.style.background = '#3b82f6';
+                        dot.style.borderColor = '#3b82f6';
+                        dot.style.boxShadow = '0 0 0 4px rgba(59, 130, 246, 0.2)';
+                        dot.style.transform = 'scale(1.2)';
+                        contentDiv.style.borderColor = 'rgba(59, 130, 246, 0.2)';
+                        contentDiv.style.background = 'rgba(59, 130, 246, 0.04)';
+                        currentDate = item.date;
+                    } else if (index < highlightIndex) {
+                        dot.style.background = '#4ade80';
+                        dot.style.borderColor = '#4ade80';
+                        dot.style.boxShadow = 'none';
+                    }
                 });
 
                 wrapper.appendChild(track);
                 listContainer.innerHTML = '';
                 listContainer.appendChild(wrapper);
+
+                // ★ 使用 id 获取绿色线元素，并设置宽度
+                // ★ 计算绿色横线宽度：延伸到最后一个绿色节点的右侧
+                setTimeout(() => {
+                    const nodes = track.querySelectorAll('.timeline-node');
+                    const greenLineEl = track.querySelector('div[style*="background: #4ade80"]');
+                    if (nodes.length > 0 && greenLineEl) {
+                        const lastGreenIndex = highlightIndex - 1; // 最后一个绿色节点的索引
+                        let targetNode = null;
+                        let width = 0;
+
+                        if (lastGreenIndex >= 0 && nodes[lastGreenIndex]) {
+                            // 有绿色节点：计算其右侧边缘位置
+                            targetNode = nodes[lastGreenIndex];
+                            const trackRect = track.getBoundingClientRect();
+                            const nodeRect = targetNode.getBoundingClientRect();
+                            // 右侧边缘相对 track 左边缘的偏移，再加一点间距（10px）让线停在空隙中
+                            const rightOffset = nodeRect.right - trackRect.left - 30;
+                            width = Math.max(rightOffset, 30); // 至少30px保证可见
+                            console.log('✅ 绿色横线终止于最后一个绿色节点右侧，宽度:', width + 'px');
+                        } else {
+                            // 没有绿色节点（高亮节点为第一个），线不延伸或停在起点
+                            width = 30; // 仅显示一小段
+                            console.log('⚠️ 没有绿色节点，线仅显示起始段');
+                        }
+
+                        greenLineEl.style.width = width + 'px';
+                    } else {
+                        console.warn('⚠️ 未找到节点或线元素');
+                        // 后备：强制显示200px测试
+                        const line = track.querySelector('div[style*="background: #4ade80"]');
+                        if (line) {
+                            line.style.width = '200px';
+                            console.log('⚠️ 强制设置宽度为200px进行测试');
+                        }
+                    }
+                }, 100);
+
+                // 二次延迟确保
+                setTimeout(() => {
+                    const line = document.getElementById(greenLine.id);
+                    if (line && (line.style.width === '0px' || line.style.width === '')) {
+                        line.style.width = '200px';
+                        console.log('⚠️ 二次强制设置宽度为200px');
+                    }
+                }, 300);
 
                 displaySection.classList.add('hidden');
                 emptyState.style.display = 'flex';
